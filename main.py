@@ -1,7 +1,21 @@
 import string
 import random
 
+import errno
+import os
+import datetime
 import requests
+
+curDir = os.getcwd()
+dirName = os.path.join(curDir, datetime.datetime.now().strftime('%Y-%m-%d'))
+
+if not os.path.exists(dirName):
+    os.mkdir(dirName)
+    print("Directory " , dirName ,  " Created ")
+else:
+    print("Directory " , dirName ,  " already exists")
+
+os.chdir(dirName)
 
 BASE_URL = 'https://i.imgur.com/'
 
@@ -19,11 +33,11 @@ print('START')
 
 while True:
     img_url = get_url()
-    r = requests.get(img_url + '.jpg')
+    i = requests.get(img_url + '.jpg', stream=True)
 
-    while r.url == 'https://i.imgur.com/removed.png':
+    while i.url == 'https://i.imgur.com/removed.png':
         img_url = get_url()
-        r = requests.get(img_url)
+        img = requests.get(img_url, stream=True)
 
     filename = img_url.split("/")[-1]
 
@@ -32,8 +46,13 @@ while True:
         data={
             'image': img_url + '.jpg',
         },
-        headers={'api-key': 'your deepAI api key goes here'}
+        headers={'api-key': 'your_api_key'}
     )
     json_response = r.json()
+    print(json_response)
     if len(json_response['output']['detections']):
-        print(img_url)
+        print('Saving: ' + img_url + ' ...')
+        image = requests.get(img_url)
+        with open(filename, wb) as f:
+            f.write(r.content)
+
