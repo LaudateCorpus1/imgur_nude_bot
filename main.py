@@ -18,16 +18,16 @@ else:
 
 os.chdir(dirName)
 
-BASE_URL = 'https://i.imgur.com/'
+BASE_URL = 'https://pixeldrain.com/u/'
 
 def get_url():
     counter = 0
     url_hash = ''
-    while counter < 5:
+    while counter < 8:
         random_letter = random.choice(string.ascii_letters)
         url_hash += random_letter
         counter += 1
-    return BASE_URL + url_hash + '.jpg'
+    return BASE_URL + url_hash
 
 
 print('START')
@@ -36,7 +36,7 @@ while True:
     img_url = get_url()
     i = requests.get(img_url + '.jpg')
 
-    while i.url != 'https://i.imgur.com/removed.png':
+    while i.url != 'https://pixeldrain.com/api/file/removed.png':
         img_url = get_url()
         img = requests.get(img_url)
 
